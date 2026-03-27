@@ -8,7 +8,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const porta = process.env.PORT;
-app.listen(porta, () => {
-   console.log(`O servidor está rodando na porta ${porta}`);
+const port = process.env.PORT;
+app.listen(port, () => {
+   console.log(`O servidor está rodando na porta ${port}`);
 });
