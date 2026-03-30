@@ -4,6 +4,7 @@ import cors from "cors";
 import * as dotenv from "dotenv";
 import { pets } from "./pets.js";
 import { randomUUID } from "crypto";
+import { validarCampoPetMiddleware } from "./middlewares.js";
 dotenv.config();
 
 const app = express();
@@ -29,7 +30,7 @@ app.get("/pets", (req, res) => {
 
 // Criar um novo pet
 // POST/pets
-app.post("/pets", (req, res) => {
+app.post("/pets", validarCampoPetMiddleware, (req, res) => {
    try {
       // entrada
       const { nome, idade, raça, nomeTutor } = req.body;
@@ -88,7 +89,7 @@ app.get("/pets/:id", (req, res) => {
 
 // Atualizar um pey existente
 // PUT/pets/:id
-app.put("/pets/:id", (req, res) => {
+app.put("/pets/:id", validarCampoPetMiddleware, (req, res) => {
    try {
       // entrada
       const { id } = req.params;
