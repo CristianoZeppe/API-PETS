@@ -4,155 +4,165 @@ import cors from "cors";
 import * as dotenv from "dotenv";
 import { pets } from "./pets.js";
 import { randomUUID } from "crypto";
-import { validarCampoPetMiddleware } from "./middlewares.js";
+import { validatePatchFieldsMiddleware } from "./middlewares.js";
 dotenv.config();
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-// listar todos os pets
-// Get/pets
+// List all pets
+// GET /pets
 app.get("/pets", (req, res) => {
    try {
       res.status(200).send({
          ok: true,
-         mensagem: "Pets listados com sucesso",
-         dados: pets,
+         message: "Pets retrieved successfully",
+         data: pets,
       });
    } catch (error) {
       res.status(500).send({
          ok: false,
-         mensagem: error.toString(),
+         message: error.toString(),
       });
    }
 });
 
-// Criar um novo pet
-// POST/pets
-app.post("/pets", validarCampoPetMiddleware, (req, res) => {
+// Create a new pet
+// POST /pets
+app.post("/pets", validatePatchFieldsMiddleware, (req, res) => {
    try {
-      // entrada
-      const { nome, idade, raça, nomeTutor } = req.body;
-      // processamento
-      const novoPet = {
+      // input
+      const { name, age, breed, ownerName } = req.body;
+
+      // processing
+      const newPet = {
          id: randomUUID(),
-         nome,
-         raça,
-         idade,
-         nomeTutor,
+         name,
+         breed,
+         age,
+         ownerName,
       };
-      pets.push(novoPet);
-      // saída
+
+      pets.push(newPet);
+
+      // output
       res.status(201).send({
          ok: true,
-         mensagem: "Pet criado com sucesso",
-         dados: pets,
+         message: "Pet created successfully",
+         data: newPet,
       });
    } catch (error) {
       res.status(500).send({
          ok: false,
-         mensagem: error.toString(),
+         message: error.toString(),
       });
    }
 });
 
-// Obter um pet pelo id
-// GET/pets:id
+// Get a pet by ID
+// GET /pets/:id
 app.get("/pets/:id", (req, res) => {
    try {
-      // entrada
+      // input
       const { id } = req.params;
 
-      // processamento
+      // processing
       const pet = pets.find((item) => item.id === id);
+
       if (!pet) {
          return res.status(404).send({
             ok: false,
-            mensagem: "O pet não foi encontrado",
+            message: "Pet not found",
          });
       }
 
-      // saída
+      // output
       res.status(200).send({
          ok: true,
-         mensagem: "Pet obtido com sucesso",
-         dados: pet,
+         message: "Pet retrieved successfully",
+         data: pet,
       });
    } catch (error) {
       res.status(500).send({
          ok: false,
-         mensagem: error.toString(),
+         message: error.toString(),
       });
    }
 });
 
-// Atualizar um pey existente
-// PUT/pets/:id
-app.put("/pets/:id", validarCampoPetMiddleware, (req, res) => {
+// Update an existing pet
+// PUT /pets/:id
+app.put("/pets/:id", validatePatchFieldsMiddleware, (req, res) => {
    try {
-      // entrada
+      // input
       const { id } = req.params;
-      const { nome, raça, idade, nomeTutor } = req.body;
+      const { name, breed, age, ownerName } = req.body;
 
-      // processamento
+      // processing
       const pet = pets.find((item) => item.id === id);
+
       if (!pet) {
          return res.status(404).send({
             ok: false,
-            mensagem: "O pet não foi encontrado",
+            message: "Pet not found",
          });
       }
-      pet.nome = nome;
-      pet.raça = raça;
-      pet.idade = idade;
-      pet.nomeTutor = nomeTutor;
 
-      // saída
+      pet.name = name;
+      pet.breed = breed;
+      pet.age = age;
+      pet.ownerName = ownerName;
+
+      // output
       res.status(200).send({
          ok: true,
-         mensagem: "Pet atualizado com sucesso",
-         dados: pets,
+         message: "Pet updated successfully",
+         data: pet,
       });
    } catch (error) {
       res.status(500).send({
          ok: false,
-         mensagem: error.toString(),
+         message: error.toString(),
       });
    }
 });
 
-// Excluir um pet
-// DELETE
+// Delete a pet
+// DELETE /pets/:id
 app.delete("/pets/:id", (req, res) => {
    try {
-      // entrada
+      // input
       const { id } = req.params;
 
-      // processamento
+      // processing
       const petIndex = pets.findIndex((item) => item.id === id);
+
       if (petIndex < 0) {
          return res.status(404).send({
             ok: false,
-            mensagem: "Pet não foi encontrado",
+            message: "Pet not found",
          });
       }
+
       pets.splice(petIndex, 1);
-      // saída
+
+      // output
       res.status(200).send({
          ok: true,
-         mensagem: "Pet excluído com sucesso",
-         dados: pets,
+         message: "Pet deleted successfully",
+         data: pets,
       });
    } catch (error) {
       res.status(500).send({
          ok: false,
-         mensagem: error.toString(),
+         message: error.toString(),
       });
    }
 });
 
 const port = process.env.PORT || 3333;
+
 app.listen(port, () => {
-   console.log(`O servidor está rodando na porta ${port}`);
+   console.log(`The server is running on port ${port}`);
 });
