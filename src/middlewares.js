@@ -1,4 +1,4 @@
-export const validatePatchFieldsMiddleware = (req, res, next) => {
+export const validatePetFieldsMiddleware = (req, res, next) => {
    try {
       const { name, age, breed, ownerName } = req.body;
 
